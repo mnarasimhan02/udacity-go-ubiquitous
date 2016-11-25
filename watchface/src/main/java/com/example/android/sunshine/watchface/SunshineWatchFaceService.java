@@ -132,7 +132,7 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
             mTextTimePaint = createTextTimePaint(resources.getColor(R.color.digital_text));
 
             mTextDatePaint = new Paint();
-            mTextDatePaint = createTextDatePaint(resources.getColor(R.color.digital_text));
+            mTextDatePaint = createTextDatePaint();
 
             mYOffsetTime = resources.getDimension(R.dimen.digital_y_offset_time);
             mYOffsetDate = resources.getDimension(R.dimen.digital_y_offset_date);
@@ -158,9 +158,8 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
             return paint;
         }
 
-        private Paint createTextDatePaint(int textColor) {
+        private Paint createTextDatePaint() {
             Paint paint = new Paint();
-            paint.setColor(textColor);
             paint.setTypeface(NORMAL_TYPEFACE);
             paint.setAntiAlias(true);
             paint.setTextSize(getResources().getDimension(R.dimen.digital_date_text_size));
@@ -260,6 +259,11 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
             int dayOfMonth = mCalendar.get(Calendar.DAY_OF_MONTH);
             int year = mCalendar.get(Calendar.YEAR);
             String dateText = String.format("%s, %s %d, %d", dayName.toUpperCase(), monthName.toUpperCase(), dayOfMonth, year);
+            if (isInAmbientMode()) {
+                mTextDatePaint.setColor(getResources().getColor(R.color.digital_text));
+            } else {
+                mTextDatePaint.setColor(getResources().getColor(R.color.primary_light));
+            }
             canvas.drawText(dateText, bounds.centerX() - mXOffsetDate, mYOffsetDate, mTextDatePaint);
         }
 
