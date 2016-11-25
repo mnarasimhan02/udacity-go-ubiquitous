@@ -126,7 +126,7 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
             Resources resources = SunshineWatchFaceService.this.getResources();
 
             mBackgroundPaint = new Paint();
-            mBackgroundPaint.setColor(resources.getColor(R.color.background));
+            mBackgroundPaint.setColor(resources.getColor(R.color.primary));
 
             mTextTimePaint = new Paint();
             mTextTimePaint = createTextTimePaint(resources.getColor(R.color.digital_text));
@@ -137,7 +137,7 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
             mYOffsetTime = resources.getDimension(R.dimen.digital_y_offset_time);
             mYOffsetDate = resources.getDimension(R.dimen.digital_y_offset_date);
 
-            mXOffsetTime = mTextTimePaint.measureText("12:00") / 2;;
+            mXOffsetTime = mTextTimePaint.measureText("12:00") / 2;
             mXOffsetDate = mTextDatePaint.measureText("WED, JUN 13, 2016") / 2;
 
             mCalendar = Calendar.getInstance();
@@ -154,6 +154,7 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
             paint.setColor(textColor);
             paint.setTypeface(NORMAL_TYPEFACE);
             paint.setAntiAlias(true);
+            paint.setTextSize(getResources().getDimension(R.dimen.digital_time_text_size));
             return paint;
         }
 
@@ -162,6 +163,7 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
             paint.setColor(textColor);
             paint.setTypeface(NORMAL_TYPEFACE);
             paint.setAntiAlias(true);
+            paint.setTextSize(getResources().getDimension(R.dimen.digital_date_text_size));
             return paint;
         }
 
@@ -204,14 +206,6 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onApplyWindowInsets(WindowInsets insets) {
             super.onApplyWindowInsets(insets);
-
-            // Load resources that have alternate values for round watches.
-            Resources resources = SunshineWatchFaceService.this.getResources();
-            boolean isRound = insets.isRound();
-            float textSize = resources.getDimension(isRound
-                    ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
-
-            mTextTimePaint.setTextSize(textSize);
         }
 
         @Override
@@ -257,9 +251,8 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
             // Draw time
             int hourOfDay = mCalendar.get(Calendar.HOUR_OF_DAY);
             int minute = mCalendar.get(Calendar.MINUTE);
-            int second = mCalendar.get(Calendar.SECOND);
             String text = String.format("%d:%02d", hourOfDay, minute);
-            canvas.drawText(text, mXOffsetTime, mYOffsetTime, mTextTimePaint);
+            canvas.drawText(text, bounds.centerX() - mXOffsetTime, mYOffsetTime, mTextTimePaint);
 
             // Draw date
             String dayName = mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
@@ -267,7 +260,7 @@ public class SunshineWatchFaceService extends CanvasWatchFaceService {
             int dayOfMonth = mCalendar.get(Calendar.DAY_OF_MONTH);
             int year = mCalendar.get(Calendar.YEAR);
             String dateText = String.format("%s, %s %d, %d", dayName.toUpperCase(), monthName.toUpperCase(), dayOfMonth, year);
-            canvas.drawText(dateText, mXOffsetDate, mYOffsetDate, mTextDatePaint);
+            canvas.drawText(dateText, bounds.centerX() - mXOffsetDate, mYOffsetDate, mTextDatePaint);
         }
 
         /**
